@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1752198020464
+current_stage: None
+description: ''
+last_updated_timestamp: 1752198020464
+name: XGBOOST_fraud
+run_id: e97fe588e47144ff8a2043041154c7f0
+run_link: ''
+source: file:///C:/Users/Yves-Ricky/Desktop/fraud_project/mlruns/100776369153801460/e97fe588e47144ff8a2043041154c7f0/artifacts/model_XGBoost/metadata
+status: READY
+status_message: null
+storage_location: file:///C:/Users/Yves-Ricky/Desktop/fraud_project/mlruns/100776369153801460/e97fe588e47144ff8a2043041154c7f0/artifacts/model_XGBoost/metadata
+user_id: null
+version: 1

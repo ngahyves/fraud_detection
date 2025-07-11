@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/Yves-Ricky/Desktop/fraud_project/mlruns/100776369153801460/8aead33951404d20a74ae468988d0835/artifacts
+end_time: 1752185147687
+entry_point_name: ''
+experiment_id: '100776369153801460'
+lifecycle_stage: active
+run_id: 8aead33951404d20a74ae468988d0835
+run_name: run_RandomForest_smote
+run_uuid: 8aead33951404d20a74ae468988d0835
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752184892380
+status: 3
+tags: []
+user_id: Yves-Ricky

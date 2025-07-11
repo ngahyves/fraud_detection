@@ -1,0 +1,10 @@
+# Raw data
+data/
+
+# python cash
+__pycache__/
+
+
+.venv/
+venv/
+env/

@@ -1,0 +1,10 @@
+artifact_location: file:C:/Users/Yves-Ricky/Desktop/fraud_detection_project/Notebooks/../mlruns/622604784630222173/models/m-cbc0b8b86c1c419b9c73711498a81de0/artifacts
+creation_timestamp: 1752110496363
+experiment_id: '622604784630222173'
+last_updated_timestamp: 1752110512879
+model_id: m-cbc0b8b86c1c419b9c73711498a81de0
+model_type: null
+name: log_model_base
+source_run_id: a9d18d826b67400e913bd0002c9c4b02
+status: 2
+status_message: null

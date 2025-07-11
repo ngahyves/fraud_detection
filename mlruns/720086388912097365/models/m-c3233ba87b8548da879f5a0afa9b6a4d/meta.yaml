@@ -1,0 +1,10 @@
+artifact_location: file:C:/Users/Yves-Ricky/Desktop/fraud_detection_project/Notebooks/../mlruns/720086388912097365/models/m-c3233ba87b8548da879f5a0afa9b6a4d/artifacts
+creation_timestamp: 1752110856143
+experiment_id: '720086388912097365'
+last_updated_timestamp: 1752110864378
+model_id: m-c3233ba87b8548da879f5a0afa9b6a4d
+model_type: null
+name: based super_vector_classifier
+source_run_id: 9fbfe22cc5cf404882803dc93d5ed742
+status: 2
+status_message: null

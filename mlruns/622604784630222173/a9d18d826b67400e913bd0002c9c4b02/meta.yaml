@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/Yves-Ricky/Desktop/fraud_detection_project/Notebooks/../mlruns/622604784630222173/a9d18d826b67400e913bd0002c9c4b02/artifacts
+end_time: 1752110512917
+entry_point_name: ''
+experiment_id: '622604784630222173'
+lifecycle_stage: active
+run_id: a9d18d826b67400e913bd0002c9c4b02
+run_name: based logistic regression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752110490434
+status: 3
+tags: []
+user_id: Yves-Ricky

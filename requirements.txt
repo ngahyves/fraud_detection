@@ -1,0 +1,12 @@
+
+# API
+fastapi
+uvicorn
+pydantic
+
+# ML & Data
+pandas
+scikit-learn
+xgboost
+mlflow
+duckdb

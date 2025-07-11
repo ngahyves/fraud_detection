@@ -1,0 +1,16 @@
+artifact_uri: file:///C:/Users/Yves-Ricky/Desktop/fraud_project/mlruns/100776369153801460/3170b96b5b494f44887c96c4030a5e7f/artifacts
+deleted_time: 1752195044564
+end_time: 1752194358225
+entry_point_name: ''
+experiment_id: '100776369153801460'
+lifecycle_stage: deleted
+run_id: 3170b96b5b494f44887c96c4030a5e7f
+run_name: ''
+run_uuid: 3170b96b5b494f44887c96c4030a5e7f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752194347633
+status: 4
+tags: []
+user_id: Yves-Ricky
