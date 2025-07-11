@@ -15,7 +15,7 @@ MODEL_NAME = "model_XGBoost"
 
 # Road to mlfow
 LOGGED_MODEL_URI = f"runs:/{RUN_ID}/{MODEL_NAME}"
-model_path = os.path.join(os.getcwd(), "mlruns", "100776369153801460", RUN_ID, "artifacts", MODEL_NAME)
+model_path = os.path.join(os.getcwd(), "mlruns", "333269949149011152", RUN_ID, "artifacts", MODEL_NAME)
 
 # --- 2. Load the model
 print(f"Load the model from mlflow from {model_path}")
