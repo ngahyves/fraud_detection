@@ -1,0 +1,8 @@
+# Ignore the saved models
+*.pkl
+*.joblib
+
+# Ignore environments saved by mlflow
+conda.yaml
+python_env.yaml
+requirements.txt

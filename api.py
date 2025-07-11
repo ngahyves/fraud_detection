@@ -10,7 +10,7 @@ import os
 # --- 1. Setting --- 
 
 
-RUN_ID = "e97fe588e47144ff8a2043041154c7f0"
+RUN_ID = "04aa10ed62db4c0583c68f0848b6a095"
 MODEL_NAME = "model_XGBoost"  
 
 # Road to mlfow

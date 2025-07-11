@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/Yves-Ricky/Desktop/fraud_project/mlruns/333269949149011152/04aa10ed62db4c0583c68f0848b6a095/artifacts
+end_time: 1752271978966
+entry_point_name: ''
+experiment_id: '333269949149011152'
+lifecycle_stage: active
+run_id: 04aa10ed62db4c0583c68f0848b6a095
+run_name: run_XGBoost_smote
+run_uuid: 04aa10ed62db4c0583c68f0848b6a095
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752271921403
+status: 3
+tags: []
+user_id: Yves-Ricky

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/Yves-Ricky/Desktop/fraud_project/mlruns/333269949149011152/8991a8ebf28440a29b7cf1191985f9a3/artifacts
+end_time: 1752271721730
+entry_point_name: ''
+experiment_id: '333269949149011152'
+lifecycle_stage: active
+run_id: 8991a8ebf28440a29b7cf1191985f9a3
+run_name: run_LogisticRegression_smote
+run_uuid: 8991a8ebf28440a29b7cf1191985f9a3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752271709907
+status: 3
+tags: []
+user_id: Yves-Ricky
