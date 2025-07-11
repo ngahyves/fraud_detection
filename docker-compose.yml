@@ -1,0 +1,27 @@
+version: '3.8' # Docker compose version
+
+services:
+  # First service : fraud API
+  api:
+    build: 
+      context: . # Build the image using the Dockerfile in the current directory.
+      dockerfile: Dockerfile
+    image: fraud-detection-api-compose # We give a name to the image constructed by compose
+    container_name: fraud_api_container
+    ports:
+      - "8000:8000" # Map port 8000 on our machine to port 8000 on the container.
+    restart: unless-stopped # Restart the container if it crashes
+
+  # Second service : monitoring dashbord
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    image: fraud-detection-dashboard-compose
+    container_name: fraud_dashboard_container
+    ports:
+      - "8501:8501" # Streamlit's default port is 8501.
+    # The command to launch the dashboard instead of the API.
+    command: streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0
+    depends_on:
+      - api # Tell Compose to start the api service BEFORE starting the dashboard.
