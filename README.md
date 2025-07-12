@@ -1,77 +1,139 @@
-# Real-Time Fraud Detection System with MLOps
+# End-to-End MLOps: Real-Time Fraud Detection System
 
-This project implements a complete end-to-end MLOps pipeline for a real-time fraud detection system. It includes data ingestion, model training with experiment tracking, a real-time scoring API, and a monitoring dashboard, all containerized with Docker and orchestrated with Docker Compose. The pipeline is also configured for Continuous Integration (CI) with GitHub Actions.
+This project demonstrates a comprehensive, end-to-end MLOps pipeline to build, deploy, and monitor a real-time fraud detection system. It showcases best practices in data science, model development, and operationalization, from initial data analysis to a containerized, multi-service application ready for production.
 
 ## Table of Contents
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Setup and Installation](#setup-and-installation)
-  - [Prerequisites](#prerequisites)
-  - [Local Setup with Docker Compose](#local-setup-with-docker-compose)
-- [Usage](#usage)
-  - [Accessing the API](#accessing-the-api)
-  - [Accessing the Monitoring Dashboard](#accessing-the-monitoring-dashboard)
-- [CI/CD Pipeline](#cicd-pipeline)
-- [Future Improvements](#future-improvements)
+- [1. Business Problem](#1-business-problem)
+- [2. The Machine Learning Pipeline](#2-the-machine-learning-pipeline)
+  - [2.1. Data Ingestion and Cleaning](#21-data-ingestion-and-cleaning)
+  - [2.2. Exploratory Data Analysis (EDA) & Feature Engineering](#22-exploratory-data-analysis-eda--feature-engineering)
+  - [2.3. Model Training and Experimentation](#23-model-training-and-experimentation)
+  - [2.4. Model Selection](#24-model-selection)
+- [3. The MLOps & Production Pipeline](#3-the-mlops--production-pipeline)
+  - [3.1. Real-Time Scoring API](#31-real-time-scoring-api)
+  - [3.2. Containerization with Docker](#32-containerization-with-docker)
+  - [3.3. CI/CD Automation](#33-cicd-automation)
+  - [3.4. Local Orchestration & Monitoring](#34-local-orchestration--monitoring)
+- [4. Tech Stack](#4-tech-stack)
+- [5. Project Structure](#5-project-structure)
+- [6. How to Run This Project](#6-how-to-run-this-project)
+  - [6.1. Prerequisites](#61-prerequisites)
+  - [6.2. Running Locally with Docker Compose](#62-running-locally-with-docker-compose)
+- [7. How to Use the System](#7-how-to-use-the-system)
+  - [7.1. The API](#71-the-api)
+  - [7.2. The Monitoring Dashboard](#72-the-monitoring-dashboard)
+- [8. Future Improvements](#8-future-improvements)
 
-## Project Overview
+---
 
-The goal of this project is to build a robust and scalable machine learning system to identify fraudulent credit card transactions. The system ingests a dataset, trains several classification models, tracks experiments to select the best one, serves it via a high-performance REST API, and provides a simple dashboard for monitoring.
+## 1. Business Problem
 
-The core business problem is to minimize financial losses for an online payment company by flagging potentially fraudulent transactions in real-time before they are processed.
+An online payment company is facing financial losses due to fraudulent credit card transactions. The objective is to develop an automated system capable of scoring incoming transactions in real-time to flag and block potential fraud before it is finalized, thereby minimizing losses and protecting customers.
 
-## Features
+The primary challenge is the severe class imbalance in the dataset—fraudulent transactions are extremely rare compared to legitimate ones.
 
-- **Experiment Tracking:** Uses **MLflow** to log model parameters, metrics (Recall, Precision, F1-Score, AUC), and artifacts (models, confusion matrices).
-- **Imbalanced Data Handling:** Implements a local version of the **SMOTE** (Synthetic Minority Over-sampling Technique) algorithm to handle the class imbalance inherent in fraud detection datasets.
-- **Real-Time Scoring API:** A high-performance API built with **FastAPI** to provide low-latency fraud predictions.
-- **Containerization:** The entire application stack (API, model, dependencies) is containerized using **Docker**, ensuring consistency across environments.
-- **Multi-Service Orchestration:** Uses **Docker Compose** to define and run the multi-container application (API + Dashboard) with a single command.
-- **Continuous Integration (CI):** An automated **GitHub Actions** workflow builds and pushes the API's Docker image to Docker Hub on every push to the `main` branch.
-- **Monitoring Dashboard:** A simple, interactive dashboard built with **Streamlit** to simulate real-time monitoring of API predictions.
+## 2. The Machine Learning Pipeline
 
-## Tech Stack
+### 2.1. Data Ingestion and Cleaning
+- Data is loaded from a local source using **DuckDB** for efficient in-memory processing.
+- The initial cleaning process involves removing duplicate records and handling any missing values to ensure data quality.
 
-- **Machine Learning:** Scikit-learn, XGBoost, Pandas, NumPy
-- **MLOps & Experiment Tracking:** MLflow
-- **API Development:** FastAPI, Uvicorn
-- **Containerization & Orchestration:** Docker, Docker Compose
-- **CI/CD:** GitHub Actions
-- **Dashboarding:** Streamlit
-- **Data Ingestion (local):** DuckDB
+### 2.2. Exploratory Data Analysis (EDA) & Feature Engineering
+- **EDA:** An analysis was performed on the cleaned data to understand the distribution of features and the scale of the class imbalance.
+- **Feature Engineering:** A new temporal feature, `hours` (hour of the day), was extracted from the `Time` column to capture potential time-based fraud patterns.
+
+### 2.3. Model Training and Experimentation
+A robust training pipeline was developed using `train.py` with the following key steps:
+- **Imbalanced Data Handling:** To address the severe class imbalance, the **SMOTE** (Synthetic Minority Over-sampling Technique) was applied to the training set. This technique synthesizes new minority class examples, helping the model learn its characteristics better.
+- **Model Comparison:** Three different classification models were trained and compared:
+    1.  **Logistic Regression:** As a simple, interpretable baseline.
+    2.  **Random Forest Classifier:** A powerful ensemble model.
+    3.  **XGBoost Classifier:** A highly optimized gradient boosting model, often state-of-the-art for tabular data.
+- **Experiment Tracking with MLflow:** Every training run was logged as an experiment in **MLflow**. This allowed for systematic tracking and comparison of:
+    - **Parameters:** Model hyperparameters and preprocessing steps (e.g., use of SMOTE).
+    - **Metrics:** A comprehensive set of classification metrics.
+    - **Artifacts:** The trained model pipeline, confusion matrices, and ROC curves for each run.
+
+### 2.4. Model Selection
+- **Metric-Driven Choice:** For fraud detection, simply maximizing accuracy is misleading. The primary goal is to catch as many fraudulent transactions as possible, even at the cost of misclassifying some legitimate ones. Therefore, the **Recall score** (True Positive Rate) was chosen as the primary metric for model selection.
+- **The Winning Model:** Based on the MLflow experiments, the **XGBoost Classifier** provided the best recall score while maintaining reasonable precision, making it the chosen model for deployment.
+
+## 3. The MLOps & Production Pipeline
+
+### 3.1. Real-Time Scoring API
+A production-grade REST API was built using **FastAPI** to serve the selected XGBoost model.
+- It exposes a `/predict` endpoint that accepts transaction data in JSON format.
+- It uses **Pydantic** for rigorous data validation, ensuring robustness.
+- It returns a clear decision (`APPROVE` or `FLAG_FOR_REVIEW`) in real-time.
+
+### 3.2. Containerization with Docker
+The entire application (API, model, and all dependencies) is encapsulated in a **Docker image**.
+- The `Dockerfile` provides a reproducible recipe for building this image.
+- This guarantees that the application runs identically on any machine, eliminating "it works on my machine" issues.
+
+### 3.3. CI/CD Automation
+A **Continuous Integration (CI)** pipeline is set up with **GitHub Actions**.
+- On every `git push` to the `main` branch, the pipeline automatically:
+    1.  Builds the Docker image.
+    2.  Logs into Docker Hub using secured secrets.
+    3.  Pushes the new version of the image to the project's [Docker Hub repository](https://hub.docker.com/r/ngahyves/fraud-detection), tagging it for version control.
+
+### 3.4. Local Orchestration & Monitoring
+- **Docker Compose:** A `docker-compose.yml` file orchestrates the entire system, allowing both the API and a monitoring dashboard to be launched with a single command (`docker-compose up`).
+- **Streamlit Dashboard:** A simple, interactive dashboard provides a simulated real-time view of the API's performance, showing key metrics like the number of transactions processed and the detected fraud rate.
+
+## 4. Tech Stack
+- **Data & ML:** Pandas, NumPy, Scikit-learn, XGBoost, DuckDB
+- **MLOps:** MLflow, Docker, Docker Compose, GitHub Actions
+- **Backend:** FastAPI, Uvicorn
+- **Frontend:** Streamlit
+
+## 5. Project Structure
+
 
 ## Project Structure
 ├── .github/
+
 │ └── workflows/
+
 │ └── ci.yml # GitHub Actions workflow for CI
+
 ├── mlruns/ # MLflow experiment tracking data (local)
+
 ├── api.py # FastAPI application for scoring
+
 ├── dashboard.py # Streamlit monitoring dashboard
+
 ├── Dockerfile # Instructions to build the application's Docker image
+
 ├── docker-compose.yml # Orchestration file for running all services
+
 ├── .dockerignore # Specifies files to ignore in the Docker build context
+
 ├── .gitignore # Specifies files to ignore for Git
+
 ├── requirements.txt # Python dependencies
+
 ├── smote_local.py # Local implementation of SMOTE to avoid library conflicts
+
 └── train.py # Script for model training and MLflow logging
 
 
 ## Setup and Installation
 
-### Prerequisites
+### 6.1. Prerequisites
 
 - [Docker](https://www.docker.com/products/docker-desktop/) installed and running.
 - [Git](https://git-scm.com/) installed.
 - A GitHub account.
 - A Docker Hub account.
 
-### Local Setup with Docker Compose
+### 6.2. Running Locally with Docker Compose
+1.  **Clone the repository:** `git clone https://github.com/ngahyves/fraud_detection.git`
+2.  **Navigate to the directory:** `cd fraud_detection`
+3.  **Build and run:** `docker-compose up --build`
 
-This is the recommended way to run the entire system locally. It will start both the API and the monitoring dashboard.
-
-1.  **Clone the repository:**
+## 7. How to Use the System
     ```bash
     git clone https://github.com/ngahyves/fraud_detection.git
     cd fraud_detection
@@ -87,10 +149,12 @@ The system is now running!
 
 ## Usage
 
-### Accessing the API
+### 7.1. The API
+- **Health Check:** [http://localhost:8000](http://localhost:8000)
+- **Interactive Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
-- **API Health Check:** Open your browser to [http://localhost:8000](http://localhost:8000)
-- **Interactive API Docs (Swagger UI):** Open [http://localhost:8000/docs](http://localhost:8000/docs) to test the `/predict` endpoint interactively.
+### 7.2. The Monitoring Dashboard
+- **URL:** [http://localhost:8501](http://localhost:8501)
 
 #### Example API Request (using curl)
 
@@ -106,11 +170,13 @@ curl -X 'POST' \
     "V22": -0.03, "V23": -0.46, "V24": 0.32, "V25": 0.04, "V26": 0.17, "V27": 0.26, "V28": -0.14,
     "Amount": 0, "hours": 12
   }'
+```
 
 Accessing the Monitoring Dashboard
 Dashboard URL: Open your browser to http://localhost:8501
 Click the "Simulate a transaction" button to send requests to the API and see the dashboard update in real-time.
-CI/CD Pipeline
+#### 8-Future Improvements and containerisation details
+CD Pipeline
 This project is configured with a Continuous Integration (CI) pipeline using GitHub Actions.
 Trigger: The workflow runs on every push to the main branch.
 Process:
@@ -119,8 +185,8 @@ Logs into Docker Hub using secrets.
 Builds the Docker image for the application.
 Pushes the image to Docker Hub, tagging it with latest and the Git commit SHA for versioning.
 Result: A new, tested, and versioned Docker image is available on Docker Hub after every update.
-Future Improvements
-Continuous Deployment (CD): Add a CD stage to the GitHub Actions workflow to automatically deploy the new Docker image to a cloud server (e.g., AWS EC2, Google Cloud Run).
-Data Persistence: Connect the dashboard to a database (like PostgreSQL or InfluxDB) to log and persist prediction history instead of storing it in-session.
-Model Monitoring: Implement data drift and concept drift detection (e.g., using tools like Evidently AI or WhyLogs) to trigger alerts or model retraining.
-Automated Retraining: Create an orchestration pipeline (e.g., with Airflow or Prefect) to periodically retrain the model on new data and register the best-performing version in MLflow.
+
+- **Continuous Deployment (CD):** Automate deployment to a cloud environment.
+- **Data Persistence:** Use a real database for logging predictions.
+- **Advanced Model Monitoring:** Implement data and concept drift detection.
+- **Automated Retraining:** Build an orchestration pipeline for periodic retraining.
